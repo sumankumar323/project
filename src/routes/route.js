@@ -1,23 +1,17 @@
-const express = require('express');
-const router = express.Router();
-const userController= require("../controllers/userController")
-const auth = require("../middleware/auth")
+const express=require('express');
+const router=express.Router();
+const authorController=require('../controller/authorController');
+const blogController=require('../controller/blogController');
+const middleware=require('../middleware/auth')
 
-router.get("/test-me", function (req, res) {
-    res.send("My first ever api!")
-})
+router.post("/authors",middleware.authenticate,authorController.createAuthor);//create author
 
-router.post("/users", userController.createUser  )
+router.post("/blogs",middleware.authenticate,blogController.createBlog);//create blogs
 
-router.post("/login", userController.loginUser)
+router.get("/blogs",middleware.authenticate,blogController.getBlogs);//get blog details
 
-//The userId is sent by front end
-router.get("/users/:userId", auth.authenticate, userController.getUserData)
+router.put("/blogs/:blogId",middleware.authorise,blogController.updateBlogs);//get blogs by id and update
 
-router.put("/users/:userId", auth.authorise, userController.updateUser)
+router.delete("/blogs/:body",middleware.authorise,blogController.deleteBlogsById);//delete blogs by id
 
-router.delete("/users/:userId", auth.authorise, userController.deleteUser)
-
-router.put("/users/:userId/posts",auth.authorise, userController.postMessage)
-
-module.exports = router;
+router.delete("/blogs",middleware.authorise,blogController.deleteBlogsByQueryParams);//delete blogs by query params
