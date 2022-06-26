@@ -13,19 +13,11 @@ const authorSchema = new mongoose.Schema(
     fname: {
       type: String,
       required: true,
-      trim: true,
-      match: [
-        /^[A-Za-z. ]{2,30}$/,
-        "lname Should Be In Alphabets & Minimum Length Should Be 2 ",
-      ],
+      trim: true
     },
     lname: {
       type: String,
-      required: true,
-      match: [
-        /^[A-Za-z. ]{2,30}$/,
-        "lname Should Be In Alphabets & Minimum Length Should Be 2 ",
-      ],
+      required: true
     },
     title: {
       type: String,
@@ -40,11 +32,7 @@ const authorSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: true,
-      match: [
-        /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,16}$/,
-        "password Must Contain One Uppercase,Lowercase,Number,Symbol And Minimum Length Should Be 8-Character",
-      ]
+      required: true
     },
   },
   {
@@ -53,7 +41,7 @@ const authorSchema = new mongoose.Schema(
 );
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////    EXPORTING   MODULES    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+///////////////////////////////////////    EXPORTING   MODULES    /////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 module.exports = mongoose.model("Author", authorSchema);
