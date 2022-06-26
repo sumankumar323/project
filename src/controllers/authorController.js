@@ -1,64 +1,66 @@
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////       REQUIRED    MODULES   AND   PACKAGES      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 const jwt = require("jsonwebtoken");
 const authorModel = require("../models/authorModel");
+var validator = require("email-validator");
+ 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////    CREATE   AUTHOR    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 const createAuthor = async function (req, res) {
-
+try{
   let data = req.body;
+  if(Object.keys(data).length==0){return res.status(400).send({status:false,msg:"no Data Entered"});}
+  if(!data.fname){return res.status(400).send({status:false,msg:"fname Must Be Present"});}
+  if(!data.lname){return res.status(400).send({status:false,msg:"lname Must Be Present"});}
+  if(!data.title){return res.status(400).send({status:false,msg:"title Must Be Present"});}
+  if(!data.email) { return res.status(400).send({status:false,msg:"email Must Be Present"});}
+  if(!validator.validate(data.email)){return res.status(400).send({status:false,msg:"please Enter Valid Email Id"})}
+  if(!data.password){ return res.status(400).send({status:false,msg:"password Must Be Present"});}
+
   let authorData = await authorModel.create(data);
   res.status(201).send({ msg: authorData });
-  
-  let token=jwt.sign(
-    {
-      authorId:author_.id.toString(),
-      
-
-    }
-  )
+}catch(err){
+  res.status(500).send({status:false,msg:err.message})
+}
 };
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////       AUTHOR    LOGIN        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const updateUser = async function (req, res) {
-  let userId = req.params.userId;
-  let user = await userModel.findById(userId);
-  //Return an error if no user with the given id exists in the db
-  if (!user) {
-    return res.send("No such user exists");
-  }
 
-  let userData = req.body;
-  let updatedUser = await userModel.findOneAndUpdate({ _id: userId }, userData, {new: true});
-  res.send({ status: updatedUser, data: updatedUser });
-};
+const authorLogin=async (req,res)=>{
+   try{
+     let data=req.body
+     let authorEmail=data.email;
+     let password=data.password;
+     if (Object.keys(data).length==0){return res.status(400).send({status:false,msg:"no Data Entered"})}
+     if(!authorEmail){return res.status(400).send({status:false,msg:"please Enter Email"})}
+     if(!password){return res.status(400).send({status:false,msg:"please Enter Password"})}
 
-const deleteUser = async function(req, res) {    
-  let userId = req.params.userId
-  let user = await userModel.findById(userId)
-  if(!user) {
-      return res.send({status: false, message: "no such user exists"})
-  }
-  let updatedUser = await userModel.findOneAndUpdate({_id: userId}, {isDeleted: true}, {new: true})
-  res.send({status: true, data: updatedUser})
+     let author=await authorModel.findOne({email:authorEmail,password:password});
+     if(!author){return res.status(400).send({status:false,msg:"no Such Author Present"})}
+
+     let token=jwt.sign(
+      {
+        authorId:author._id.toString()
+      },
+       "group-16"
+     );
+     res.status(201).send({status:true,msg:token})
+   }catch(err){
+    res.status(500).send({status:false,msg:err.message})
+   } 
 }
 
-
-const postMessage = async function (req, res) {
- 
-    let user = await userModel.findById(req.params.userId)
-    if(!user) return res.send({status: false, msg: 'No such user exists'})
-    
-    let message = req.body.message
-    let updatedPosts = user.posts
-    //add the message to user's posts
-    updatedPosts.push(message)
-    let updatedUser = await userModel.findOneAndUpdate({_id: user._id},{posts: updatedPosts}, {new: true})
-
-    //return the updated user document
-    return res.send({status: true, data: updatedUser})
-}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////        EXPORTED   MODULES     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 module.exports.createAuthor = createAuthor;
-module.exports.getUserData = getUserData;
-module.exports.updateUser = updateUser;
-module.exports.loginUser = loginUser;
-module.exports.deleteUser = deleteUser;
-module.exports.postMessage = postMessage;
+module.exports.authorLogin = authorLogin;

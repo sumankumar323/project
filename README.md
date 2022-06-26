@@ -1,4 +1,3 @@
-
 Radon
 Repository for backend cohort - Radon
 
@@ -71,30 +70,30 @@ A Postman collection and request sample
 Response
 Successful Response structure
 {
-  status: true,
-  data: {
+status: true,
+data: {
 
-  }
+}
 }
 Error Response structure
 {
-  status: false,
-  msg: ""
+status: false,
+msg: ""
 }
 Collections
 Blogs
 {
-  "title": "How to win friends",
-  "body": "Blog body",
-  "tags": ["Book", "Friends", "Self help"],
-  "category": "Book",
-  "subcategory": ["Non fiction", "Self Help"],
-  "published": false,
-  "publishedAt": "", // if published is true publishedAt will have a date 2021-09-17T04:25:07.803Z
-  "deleted": false,
-  "deletedAt": "", // if deleted is true deletedAt will have a date 2021-09-17T04:25:07.803Z,
-  "createdAt": "2021-09-17T04:25:07.803Z",
-  "updatedAt": "2021-09-17T04:25:07.803Z",
+"title"": ["Non fiction", "Self Help"],
+"published": false,
+"publishedAt": "", // if published is true publishedAt will have a date 2021-09-17T04:25:07.803Z
+"deleted": false,: "How to win friends",
+"body": "Blog body",
+"tags": ["Book", "Friends", "Self help"],
+"category": "Book",
+"subcategory
+"deletedAt": "", // if deleted is true deletedAt will have a date 2021-09-17T04:25:07.803Z,
+"createdAt": "2021-09-17T04:25:07.803Z",
+"updatedAt": "2021-09-17T04:25:07.803Z",
 }
 Refer https://jsonplaceholder.typicode.com/guide/ for some fake blogs data.
 Note: Create a group database and use the same database in connection string by replacing `groupXDatabase

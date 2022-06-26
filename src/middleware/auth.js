@@ -1,41 +1,69 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////    REQUIRED   MODULES  AND  PACKAGES    ///////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 const jwt = require("jsonwebtoken");
+const blogModel = require("../models/blogModel");
 
-const authenticate   = function(req, res, next) {
-    try{
-    let token = req.headers["x-Auth-token"];
-    if (!token) token = req.headers["x-auth-token"];
-  
-    if (!token) return res.status(404).send({ status: false, msg: "token must be present" });
-   console.log(token);
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////          AUTHENTICATION          ///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    let decodedToken = jwt.verify(token, "functionup-radon");
+const authenticate = function (req, res, next) {
+  try {
+    let token = req.headers["x-Api-Key"];
+    if (!token) token = req.headers["x-api-key"];
 
-   }catch(error){
-       res.status(400).send({msg: false, error:error.message})  
-   }
-    next()
+    if (!token)
+      return res
+        .status(404)
+        .send({ status: false, msg: "token must be present" });
+    // console.log(token);
+  } catch (error) {
+    res.status(500).send({ msg: false, error: error.message });
+  }
+  next();
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////              AUTHORIZATION               ///////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+const authorise = async function (req, res, next) {
+  try {
+    let token = req.headers["x-api-key"];
+    if (!token) token = req.headers["x-api-key"];
+
+    let decodedToken = jwt.verify(token, "group-16");
+    console.log(decodedToken);
+    if (!decodedToken) {
+      return res.status(404).send({ status: false, msg: "token must be present" });
+    }
+
+    let blogId = req.params.blogId;
+    let author_Id = decodedToken.authorId;
     
-}
+    let authorValid = await blogModel.find({
+      authorId: author_Id,
+      blogId: blogId,
+    });
+    
+    if (!authorValid) {
+      return res.status(404).send({
+        status: false,
+        msg: "author logged in has no blogs for modification ",
+      });
+     req.headers.decodedToken = decodedToken;
+    }
+  } catch (error) {
+    res.status(500).send({ msg: false, error: error.message });
+  }
+  next();
+};
 
-const authorise = function(req, res, next) {
-    try{
-    let token = req.headers["x-auth-token"]
-    if(!token) return res.status(400).send({status: false, msg: "token must be present in the request header"})
-   
-    let decodedToken = jwt.verify(token, 'functionup-radon')
-    console.log(decodedToken)
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////        EXPORTING      MODULES          //////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    let userToBeModified = req.params.userId
- 
-    let userLoggedIn = decodedToken.userId
-  
-    if(userToBeModified != userLoggedIn) return res.send({status: false, msg: 'User logged is not allowed to modify the requested users data'})
-  
-    }catch(error){
-      res.status(403).send({msg:false,error:error.message})
-   }
-    next()
-}
-
-module.exports.authenticate =authenticate 
-module.exports.authorise =authorise
+module.exports.authenticate = authenticate;
+module.exports.authorise = authorise;
