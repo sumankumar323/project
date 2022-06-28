@@ -6,6 +6,9 @@ const internController = require("../controller/collegeController");
 
 
 
+router.route("/functionup/colleges").post
+ 
+
 
 
 module.exports = router;
