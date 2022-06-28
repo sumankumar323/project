@@ -13,14 +13,14 @@ const authenticate = function (req, res, next) {
   try {
     let token = req.headers["x-Api-Key"];
     if (!token) token = req.headers["x-api-key"];
-
+    console.log(token);
     if (!token)
       return res
         .status(404)
         .send({ status: false, msg: "token must be present" });
-    // console.log(token);
+     
   } catch (error) {
-    res.status(500).send({ msg: false, error: error.message });
+   return res.status(500).send({ msg: false, error: error.message });
   }
   next();
 };
@@ -31,10 +31,10 @@ const authenticate = function (req, res, next) {
 
 const authorise = async function (req, res, next) {
   try {
-    let token = req.headers["x-api-key"];
+    let token = req.headers["x-Api-Key"];
     if (!token) token = req.headers["x-api-key"];
 
-    let decodedToken = jwt.verify(token, "group-16");
+    let decodedToken = jwt.verify(token,"group-16");
     console.log(decodedToken);
     if (!decodedToken) {
       return res.status(404).send({ status: false, msg: "token must be present" });
@@ -53,10 +53,9 @@ const authorise = async function (req, res, next) {
         status: false,
         msg: "author logged in has no blogs for modification ",
       });
-     req.headers.decodedToken = decodedToken;
-    }
+        }
   } catch (error) {
-    res.status(500).send({ msg: false, error: error.message });
+   return res.status(500).send({ msg: false, error: error.message });
   }
   next();
 };
