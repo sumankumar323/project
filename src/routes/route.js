@@ -1,6 +1,6 @@
 
 const express=require('express');
-const router=express.Router();
+const router=express();
 const {createCollege} = require("../controller/collegeController");
 const {createIntern}= require("../controller/internController");
 

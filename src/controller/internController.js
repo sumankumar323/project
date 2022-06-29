@@ -1,4 +1,3 @@
-
 const internModel=require("../models/internModel.js")
 const collegeModel=require("../models/collegeModel")
 const validateEmail=require("email-validator")
@@ -42,6 +41,8 @@ exports.createIntern= async function(req,res){
             res.status(400).send({ status: false, msg: " college name is required" });
             return
         }
+
+
     const getCollegeData= await collegeModel.findOne({name:internDetails.collegeName}).select({_id:1})
      if(!getCollegeData) return res.status(404).send({status:false,msg:"enter a valid college name"})
        internDetails.collegeId=getCollegeData._id

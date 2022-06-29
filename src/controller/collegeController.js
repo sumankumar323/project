@@ -43,4 +43,20 @@ const createCollege= async function(req,res){
 };
 
 
+// const getCollegeDetail=async function(req,res){
+//     try{
+//         let internDetails=req.query
+//         if(Object.keys(internDetails).length==0){return res.status(400).send({status:false,msg:"please enter the college Name in QueryParam"});
+//         let internDetails = await 
+//     }
+
+      
+//     }catch(err){
+//         console.log(err.message)
+//         return res.status(500).send({error:err.message})
+//     }
+
+// };
+
+
 module.exports.createCollege=createCollege
