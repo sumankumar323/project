@@ -1,13 +1,6 @@
 const collegeModel = require("../models/collegeModel");
 const internModel = require("../models/internModel.js");
 
-<<<<<<< HEAD
-let validString = /\d/;  //using regex for validation string
-
-const isValid = function (value) {
-    if (typeof value == "undefined" || value == null) return false; //check value using typeof 
-    if (typeof value == "string" && value.trim().length === 0) return false; 
-=======
 
 let validUrl = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/
 
@@ -16,27 +9,17 @@ let validString = /\d/; //To validate String using RegEx
 const isValid = function (value) {   //function to check entered data is valid or not
     if (typeof value == "undefined" || value == null) return false;
     if (typeof value == "string" && value.trim().length === 0) return false;
->>>>>>> f082b5c95e636e0293636fbe439136d6af52836a
     return true;
 }
 const isValidReqestBody = function (requestBody) {  //function to check is there any key is present in request body
     return Object.keys(requestBody).length !== 0;
 }
 
-<<<<<<< HEAD
-//......*************************________CREATE COLLEGE________*******************..............//
-
-
-exports.createCollege= async function(req,res){     
-    try{
-        let collegeDetails=req.body
-=======
 //===================================================[API:FOR CREATING COLLEGE DB]===========================================================
 
 exports.createCollege = async function (req, res) {
     try {
         let collegeDetails = req.body   //getting data from request body
->>>>>>> f082b5c95e636e0293636fbe439136d6af52836a
 
         if (!isValidReqestBody(collegeDetails)) {  //validating is there any data inside request body
             res.status(400).send({ status: false, message: `${collegeDetails} No College Detail Received` })
@@ -83,11 +66,7 @@ exports.createCollege = async function (req, res) {
 
 };
 
-<<<<<<< HEAD
-//......***********************________GET INTERN DETAILS USING COLLEGE NAME _______************************...........//
-=======
 //===================================================[API:FOR GETTING LIST OF ALL INTERNS]===========================================================
->>>>>>> f082b5c95e636e0293636fbe439136d6af52836a
 
 
 exports.getIntern = async function (req, res) {

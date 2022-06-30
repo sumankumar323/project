@@ -13,12 +13,7 @@ const isValidReqestBody = function (requestBody) {   //function to check is ther
     return Object.keys(requestBody).length !== 0;
 }
 
-<<<<<<< HEAD
-//......*************************________CREATE INTERN ________*******************..............//
-
-=======
 //===================================================[API:FOR CREATING INTERN DB]===========================================================
->>>>>>> f082b5c95e636e0293636fbe439136d6af52836a
 
 exports.createIntern = async function (req, res) {
     try {
@@ -59,26 +54,10 @@ exports.createIntern = async function (req, res) {
             res.status(400).send({ status: false, msg: " college name is required and enter valid college name" });
             return
         }
-<<<<<<< HEAD
-
-        //checking enter college name (if it present or not )
-
-
-        const getCollegeData = await collegeModel.findOne({ name: internDetails.collegeName }).select({ _id: 1 })
-        if (!getCollegeData) return res.status(404).send({ status: false, msg: "enter a valid college name" })
-        internDetails.collegeId = getCollegeData._id
-
-
-
-        internData = await internModel.create(internDetails)
-        return res.status(201).send({ status: true, data: internData })
-
-=======
         //checking entered collegeName exist or not
         const getCollegeData = await collegeModel.findOne({ name: internDetails.collegeName }).select({ _id: 1 });
         if (!getCollegeData) return res.status(404).send({ status: false, msg: "College name does not exist" })
         internDetails.collegeId = getCollegeData._id  //storing object id of college in intern detail
->>>>>>> f082b5c95e636e0293636fbe439136d6af52836a
 
         internData = await internModel.create(internDetails)  //creating document after clearing all the validation
         let Intern = {    //storing all data in an object
