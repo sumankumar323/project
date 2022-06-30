@@ -63,7 +63,7 @@ exports.createIntern = async function (req, res) {
         let Intern = {    //storing all data in an object
             "isDeleted": internData.isDeleted,
             "name": internData.name,
-            "email": internData.email,
+            "email": internData.email, //changes
             "mobile": internData.mobile,
             "collegeId": `ObjectId(${internData.collegeId})`
         }
