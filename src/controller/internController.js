@@ -15,8 +15,8 @@ const isValid = function (value) {   //function to check entered data is valid o
 
 exports.createIntern = async function (req, res) {
     try {
-        if (Object.keys(req.query).length == 0) {
-            let internDetails = req.body;  //getting data from request body
+         if (Object.keys(req.query).length == 0) {
+             let internDetails = req.body;  //getting data from request body
 
             if (Object.keys(internDetails).length == 0) { //validating is there any data inside request body
                 res.status(400).send({ status: false, message: " No Intern Detail Received" });
@@ -67,9 +67,10 @@ exports.createIntern = async function (req, res) {
                 "collegeId": `ObjectId(${internData.collegeId})`
             }
             return res.status(201).send({ status: true, data: Intern })
-        } else {
-            return res.status(400).send({ status: false, message: "Invalid request you can't provide data in query" });
-        }
+         }
+          else {
+           return res.status(400).send({ status: false, message: "Invalid request you can't provide data in query" });
+          }
     } catch (err) {
         console.log("This is the error:", err.message)
         res.status(500).send({ msg: "Error", error: err.message })
