@@ -102,7 +102,9 @@ const userLogin = async (req, res) => {
 
     const token = jwt.sign({
         userId: userid
-    }, "group no 54");
+    }, "group no 54",{
+        expiresIn:'1h'
+    });
 
     res.status(200).send({ status: true, message: 'Success', data: token })
 
