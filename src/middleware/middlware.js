@@ -1,31 +1,22 @@
-const jwt = require("jsonwebtoken");
+const jwt=require("jsonwebtoken")
 
-const verifyToken = (req, res, next) => {
-  const authHeader = req.headers.X-API-KEY || req.headers.x-api-key ;
-  if (authHeader) {
-    const token = authHeader;
-    jwt.verify(token, 'groupno54', (err, user) => {
-      if (err) res.status(403).json("Token is not valid!");
-      req.user = user;
-      next();
-    });
-  } else {
-    return res.status(401).json("You are not authenticated!");
-  }
-};
+//Authentication & Authorization
 
-const verifyTokenAndAuthorization = (req, res, next) => {
-  verifyToken(req, res, () => {
-    if (req.user.id === req.params.id) {
-      next();
-    } else {
-      res.status(403).json("You are not alowed to do that!");
+const mid1 = async function (req, res, next) {
+    try {
+      let token = req.headers["x-api-key"] || req.headers["X-API-KEY"];
+  
+      if (!token) return res.status(401).send({ status: false, msg: "You are not authenticated!" });
+  
+        jwt.verify(token, "group no 54", (err, user) => {
+          if (err) res.status(403).json("Token is not valid!");
+          req.userId=user.userId     
+               next();
+        });
+  } catch (err) {
+     return res.status(500).send({ msg: "Error", error: err.message })
     }
-  });
-};
-
-
-module.exports = {
-  verifyToken,
-  verifyTokenAndAuthorization,
-};
+  
+  }
+  
+  module.exports.mid1 = mid1

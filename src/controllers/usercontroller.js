@@ -101,7 +101,9 @@ const userLogin = async (req, res) => {
     const userid = loginData._id.toString()
 
     const token = jwt.sign({
-        userId: userid
+        userId: userid,
+        iat: Math.floor(Date.now() / 1000),
+  
     }, "group no 54",{
         expiresIn:'1h'
     });
