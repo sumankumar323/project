@@ -1,6 +1,7 @@
 const bookModel = require("../Model/bookmodel");
 const reviewModel = require("../Model/reviewmodel");
 const validation = require("../validator/validator");
+const userModel = require("../Model/usermodel");
 const ObjectId = require("mongoose").Types.ObjectId;
 
 exports.updateReview = async function (req, res) {
@@ -115,11 +116,12 @@ if (review) {
 //-------********_____.........Add Review -----------***************.....................
 
 exports.addReview = async function (req, res) {
+    try{
   const bookId = req.params.bookId;
   const queryParams = req.body;
   const { reviewedBy, reviewedAt, rating, review } = queryParams;
 
-  if (validation.isValidReqBody(queryParams)) {
+  if (!validation.isValidReqBody(queryParams)) {
     return res
       .status(400)
       .send({
@@ -127,18 +129,18 @@ exports.addReview = async function (req, res) {
         message: "Please provide the book review details",
       });
   }
-  if (validation.isValidObjectId(bookId)) {
+  if (!validation.isValidObjectId(bookId)) {
     return res
       .status(400)
       .send({ status: false, message: "Book id is not valid!" });
   }
-  if (validation.isValid(reviewedBy)) {
+  if (!validation.isValid(reviewedBy)) {
     return res
       .status(400)
       .send({ status: false, message: "Please provide reviewer name!" });
   }
 
-  if (validation.isValidRating(rating)) {
+  if (!validation.isValidRating(rating)) {
     return res
       .status(400)
       .send({ status: false, message: "Rating scale should be 1 - 5!" });
@@ -166,6 +168,13 @@ exports.addReview = async function (req, res) {
   return res
     .status(201)
     .send({ status: true, message: "Success", data: reviewResponse });
+    }catch(err){
+        return res
+        .status(201)
+        .send({ status: false, message: err.message});
+      
+    }
+
 };
 
 //........................**********------------ DELETE books by reviewsId------*******............
