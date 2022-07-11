@@ -126,7 +126,7 @@ exports.addReview = async function (req, res) {
   try {
     const bookId = req.params.bookId;
     const queryParams = req.body;
-    const { reviewedBy, reviewedAt, rating, review } = queryParams;
+    const { reviewedBy,rating, review } = queryParams;
 
     if (!isValidReqBody(queryParams)) {
       return res.status(400).send({
@@ -139,12 +139,16 @@ exports.addReview = async function (req, res) {
         .status(400)
         .send({ status: false, message: "Book id is not valid!" });
     }
-    if (!isValid(reviewedBy)) {
-      return res
+    if(queryParams.hasOwnProperty("reviewedBy")){
+      if(!isValid(reviewedBy)){
+        return res
         .status(400)
-        .send({ status: false, message: "Please provide reviewer name!" });
-    }
-    if (!isValidName(reviewedBy)) {
+        .send({
+          status: false,
+          message: "Please provide correct reviewer name!",
+        });  
+      }
+      if (!isValidName(reviewedBy)) {
       return res
         .status(400)
         .send({
@@ -152,6 +156,7 @@ exports.addReview = async function (req, res) {
           message: "Please provide correct reviewer name!",
         });
     }
+  }
     if (!isValid(rating)) {
       return res
         .status(400)
@@ -164,20 +169,20 @@ exports.addReview = async function (req, res) {
         .send({ status: false, message: "Rating scale should be 1 - 5!" });
     }
 
-    if (!isValid(reviewedAt)) {
-      return res
-        .status(400)
-        .send({ status: false, message: "plss provide reviewedAt" });
-    }
-    if (!isValidRelAt(reviewedAt)) {
-      return res
-        .status(400)
-        .send({
-          status: false,
-          message: "wrong fromat reviewedAt format is yyyy-mm-dd",
-        });
-    }
-
+    // if (!isValid(reviewedAt)) {
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: "plss provide reviewedAt" });
+    // }
+    // if (!isValidRelAt(reviewedAt)) {
+    //   return res
+    //     .status(400)
+    //     .send({
+    //       status: false,
+    //       message: "wrong fromat reviewedAt format is yyyy-mm-dd",
+    //     });
+    // }
+let date = new Date().toString();
     if (!isValid(review)) {
       return res
         .status(400)
@@ -195,9 +200,15 @@ exports.addReview = async function (req, res) {
       return res.status(404).send({ status: false, message: "No book found" });
     }
 
-    const data = { bookId: bookId, ...queryParams };
+    const responseBody = {
+      bookId: bookId,
+      reviewedBy: reviewedBy || 'Guest',
+      rating: rating,
+      reviewedAt: date,
+      review: review,
+    };
 
-    const reviewData = await reviewModel.create(data);
+    const reviewData = await reviewModel.create(responseBody);
 
     const reviewResponse = {
       _id: reviewData._id,

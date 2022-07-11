@@ -1,12 +1,12 @@
 const usermodel = require("../Model/usermodel");
 
 const jwt = require("jsonwebtoken");
+const {
+  isValidReqBody,
+  isValid,
+  isValidName,
+} = require("../validator/validator");
 
-const isValid = function (value) {
-  if (typeof value === "undefined" || value === null) return false;
-  if (typeof value === "string" && value.trim().length === 0) return false;
-  return true;
-};
 createUser = async function (req, res) {
   try {
     const data = req.body;
@@ -78,12 +78,65 @@ createUser = async function (req, res) {
         .send({ status: false, message: "password is required!" });
     }
     if (password.length < 8 || password.length > 15) {
-      return res
-        .status(400)
-        .send({
-          status: false,
-          message: "password should be between 8 to 15 character!",
-        });
+      return res.status(400).send({
+        status: false,
+        message: "password should be between 8 to 15 character!",
+      });
+    }
+    const pinReg = /^[0-9]{6}$/;
+    //If address is present
+    if (address) {
+      if (typeof address !== "object")
+        return res
+          .status(400)
+          .send({ status: false, message: "'address' is not an object" });
+      if (!isValidReqBody(address))
+        return res
+          .status(400)
+          .send({ status: false, message: "'address' is empty" });
+
+      //In address the street is present
+      if (address.street) {
+        if (!isValid(address.street))
+          return res
+            .status(400)
+            .send({ status: false, message: "Please Enter street." });
+        if (!isValidName(address.street))
+          return res
+            .status(400)
+            .send({
+              status: false,
+              message: "street name should contain only alphabets.",
+            });
+      }
+      //In address the city is present
+      if (address.city) {
+        if (!isValid(address.city))
+          return res
+            .status(400)
+            .send({ status: false, message: "Please Enter city" });
+        if (!isValidName(address.city))
+          return res
+            .status(400)
+            .send({
+              status: false,
+              message: "City name should contain only alphabets.",
+            });
+      }
+      //In address the pincode is present
+      if (address.pincode) {
+        if (!isValid(address.pincode))
+          return res
+            .status(400)
+            .send({ status: false, message: "Please Enter pincode" });
+        if (!pinReg.test(address.pincode))
+          return res
+            .status(400)
+            .send({
+              status: false,
+              message: "Pin no should be 6 digit numerical value only.",
+            });
+      }
     }
 
     const user = await usermodel.create(data);
@@ -124,12 +177,10 @@ const userLogin = async (req, res) => {
       .send({ status: false, message: "password is required!" });
   }
   if (password.length < 8 || password.length > 15) {
-    return res
-      .status(400)
-      .send({
-        status: false,
-        message: "password should be between 8 to 15 character!",
-      });
+    return res.status(400).send({
+      status: false,
+      message: "password should be between 8 to 15 character!",
+    });
   }
 
   const loginData = await usermodel.findOne(data);

@@ -32,13 +32,11 @@ const createBook = async function (req, res) {
         .status(400)
         .send({ status: false, message: "Book title is required" });
     if (!validation.isValidName(title))
-      return res
-        .status(400)
-        .send({
-          status: false,
-          message:
-            "Title is invalid(Should Contain Alphabets, numbers, quotation marks & [@ , . ; : ? & ! _ - $]",
-        });
+      return res.status(400).send({
+        status: false,
+        message:
+          "Title is invalid(Should Contain Alphabets, numbers, quotation marks & [@ , . ; : ? & ! _ - $]",
+      });
 
     const uniqueTitle = await bookModel.findOne({ title });
     if (uniqueTitle)
@@ -52,12 +50,10 @@ const createBook = async function (req, res) {
         .status(400)
         .send({ status: false, message: "Book excerpt is required" });
     if (!validation.isValidName(excerpt))
-      return res
-        .status(400)
-        .send({
-          status: false,
-          message: "excerpt is not valid(Should cointain alphabets only)",
-        });
+      return res.status(400).send({
+        status: false,
+        message: "excerpt is not valid(Should cointain alphabets only)",
+      });
 
     // Validate userId
     if (!validation.isValid(userId))
@@ -69,7 +65,9 @@ const createBook = async function (req, res) {
         .status(400)
         .send({ status: false, message: "Not a valid user id" });
 
-    const validUser = await userModel.findById(userId);
+    console.log(userId);
+    const validUser = await userModel.findById({ _id: userId });
+    console.log(validUser);
     if (!validUser)
       return res
         .status(404)
@@ -81,12 +79,10 @@ const createBook = async function (req, res) {
         .status(400)
         .send({ status: false, message: "ISBN is required" });
     if (!validation.isValidISBN(ISBN))
-      return res
-        .status(400)
-        .send({
-          status: false,
-          message: "Not a Valid ISBN. (Only 10 or 13 digit number.)",
-        });
+      return res.status(400).send({
+        status: false,
+        message: "Not a Valid ISBN. (Only 10 or 13 digit number.)",
+      });
 
     const uniqueISBN = await bookModel.findOne({ ISBN: ISBN });
     if (uniqueISBN)
@@ -100,12 +96,10 @@ const createBook = async function (req, res) {
         .status(400)
         .send({ status: false, message: "category is required" });
     if (!validation.isValidName(category))
-      return res
-        .status(400)
-        .send({
-          status: false,
-          message: "Category is not valid(Should cointain alphabets only)",
-        });
+      return res.status(400).send({
+        status: false,
+        message: "Category is not valid(Should cointain alphabets only)",
+      });
 
     //------------------------------------------------------------------
     //Validate subcategory
@@ -122,13 +116,11 @@ const createBook = async function (req, res) {
       }
     }
     if (!validation.isValidName(subcategory))
-      return res
-        .status(400)
-        .send({
-          status: false,
-          message:
-            "Subcategory is invalid (Should Contain Alphabets, numbers, quotation marks  & [@ , . ; : ? & ! _ - $].",
-        });
+      return res.status(400).send({
+        status: false,
+        message:
+          "Subcategory is invalid (Should Contain Alphabets, numbers, quotation marks  & [@ , . ; : ? & ! _ - $].",
+      });
     let subArray = subcategory.split(",");
     data["subcategory"] = subArray;
 
@@ -138,21 +130,17 @@ const createBook = async function (req, res) {
         .status(400)
         .send({ status: false, message: "Release date is Required" });
     if (!validation.isValidRelAt(releasedAt))
-      return res
-        .status(400)
-        .send({
-          status: false,
-          message: "Date should be valid & format will YYYY-MM-DD",
-        });
+      return res.status(400).send({
+        status: false,
+        message: "Date should be valid & format will YYYY-MM-DD",
+      });
 
     // Can't Set deleted true at creation time
     if (isDeleted == true)
-      return res
-        .status(400)
-        .send({
-          status: false,
-          message: "You can't add this key at book creation time.",
-        });
+      return res.status(400).send({
+        status: false,
+        message: "You can't add this key at book creation time.",
+      });
 
     // const bookData = { title, excerpt, userId, ISBN, category, bookCover, subcategory, releasedAt }
 
@@ -164,13 +152,11 @@ const createBook = async function (req, res) {
         .send({ status: false, message: "Unauthorized Access." });
 
     const savedBook = await bookModel.create(data);
-    return res
-      .status(201)
-      .send({
-        status: true,
-        message: "Book Created Successfully",
-        data: savedBook,
-      });
+    return res.status(201).send({
+      status: true,
+      message: "Book Created Successfully",
+      data: savedBook,
+    });
   } catch (err) {
     return res.status(500).send({ status: false, message: err.message });
   }
@@ -186,7 +172,7 @@ const getBooks = async function (req, res) {
 
     // Validation of user id and adding to query
     if (userId) {
-      if (!ObjectId.isValid(userId)) {
+      if (!validation.isValidObjectId(userId)) {
         return res
           .status(400)
           .send({ status: false, message: "Invalid UserId." });
@@ -207,17 +193,15 @@ const getBooks = async function (req, res) {
       filter["subcategory"] = { $in: subCategoryArray };
     }
 
-    const findBooks = await bookModel
-      .find(filter)
-      .select({
-        title: 1,
-        excerpt: 1,
-        userId: 1,
-        category: 1,
-        reviews: 1,
-        releasedAt: 1,
-        subcategory: 1,
-      });
+    const findBooks = await bookModel.find(filter).select({
+      title: 1,
+      excerpt: 1,
+      userId: 1,
+      category: 1,
+      reviews: 1,
+      releasedAt: 1,
+      subcategory: 1,
+    });
 
     if (findBooks.length === 0)
       return res
@@ -308,23 +292,19 @@ const updatebook = async function (req, res) {
     // Destructuring
     const { title, excerpt, releasedAt, ISBN } = dataToUpdate;
     if (!validation.isValidReqBody(dataToUpdate))
-      return res
-        .status(400)
-        .send({
-          status: false,
-          message: "Please enter details you want to update.",
-        });
+      return res.status(400).send({
+        status: false,
+        message: "Please enter details you want to update.",
+      });
 
     // If title is present
     if (title) {
       if (!validation.isValid(title) || !validation.isValidName(title))
-        return res
-          .status(400)
-          .send({
-            status: false,
-            message:
-              "Title is invalid (Should Contain Alphabets, numbers, quotation marks  & [@ , . ; : ? & ! _ - $].",
-          });
+        return res.status(400).send({
+          status: false,
+          message:
+            "Title is invalid (Should Contain Alphabets, numbers, quotation marks  & [@ , . ; : ? & ! _ - $].",
+        });
 
       const uniqueTitle = await bookModel.findOne({ title });
       if (uniqueTitle)
@@ -337,12 +317,10 @@ const updatebook = async function (req, res) {
     // If ISBN is present
     if (ISBN) {
       if (!validation.isValidISBN(ISBN))
-        return res
-          .status(400)
-          .send({
-            status: false,
-            message: "Not a Valid ISBN. (Only 10 or 13 digit number.)",
-          });
+        return res.status(400).send({
+          status: false,
+          message: "Not a Valid ISBN. (Only 10 or 13 digit number.)",
+        });
 
       const uniqueISBN = await bookModel.findOne({ ISBN });
       if (uniqueISBN)
@@ -355,12 +333,10 @@ const updatebook = async function (req, res) {
     // If Releaded date is present
     if (releasedAt) {
       if (!validation.isValidDate(releasedAt))
-        return res
-          .status(400)
-          .send({
-            status: false,
-            message: "Date should be valid & format will YYYY-MM-DD",
-          });
+        return res.status(400).send({
+          status: false,
+          message: "Date should be valid & format will YYYY-MM-DD",
+        });
     }
     dataToUpdate["releasedAt"] = releasedAt;
 
@@ -379,13 +355,11 @@ const updatebook = async function (req, res) {
       dataToUpdate,
       { new: true }
     );
-    res
-      .status(200)
-      .send({
-        status: true,
-        msg: "Book details updated successfully",
-        data: updatedDetails,
-      });
+    res.status(200).send({
+      status: true,
+      msg: "Book details updated successfully",
+      data: updatedDetails,
+    });
   } catch (err) {
     return res.status(500).send({ status: false, message: err.message });
   }
@@ -429,12 +403,10 @@ const deleteBook = async function (req, res) {
       .find({ bookId: bookId, isDeleted: false })
       .updateMany({ $set: { isDeleted: true } });
 
-    res
-      .status(200)
-      .send({
-        status: true,
-        message: "Book & Reviews of the book are Deleted",
-      });
+    res.status(200).send({
+      status: true,
+      message: "Book & Reviews of the book are Deleted",
+    });
   } catch (err) {
     return res.status(500).send({ status: false, message: err.message });
   }
