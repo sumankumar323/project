@@ -65,9 +65,7 @@ const createBook = async function (req, res) {
         .status(400)
         .send({ status: false, message: "Not a valid user id" });
 
-    console.log(userId);
     const validUser = await userModel.findById({ _id: userId });
-    console.log(validUser);
     if (!validUser)
       return res
         .status(404)
