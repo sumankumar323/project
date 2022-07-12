@@ -101,14 +101,10 @@ exports.updateReview = async function (req, res) {
       { new: true }
     );
 
-    const allAvailableReviews = await reviewModel.find({
-      bookId: bookId,
-      isDeleted: false,
-    });
 
     //setting a new key in review object
     let availableBook1 = availableBook.toObject();
-    availableBook1.reviewData = allAvailableReviews;
+    availableBook1.reviewData = updatedReview;
 
     return res.status(200).send({ status: true, data: availableBook1 });
   } catch (err) {
@@ -126,7 +122,7 @@ exports.addReview = async function (req, res) {
   try {
     const bookId = req.params.bookId;
     const queryParams = req.body;
-    const { reviewedBy,rating, review } = queryParams;
+    const { reviewedBy, rating, review } = queryParams;
 
     if (!isValidReqBody(queryParams)) {
       return res.status(400).send({
@@ -139,24 +135,20 @@ exports.addReview = async function (req, res) {
         .status(400)
         .send({ status: false, message: "Book id is not valid!" });
     }
-    if(queryParams.hasOwnProperty("reviewedBy")){
-      if(!isValid(reviewedBy)){
-        return res
-        .status(400)
-        .send({
-          status: false,
-          message: "Please provide correct reviewer name!",
-        });  
-      }
-      if (!isValidName(reviewedBy)) {
-      return res
-        .status(400)
-        .send({
+    if (reviewedBy) {
+      if (!isValid(reviewedBy)) {
+        return res.status(400).send({
           status: false,
           message: "Please provide correct reviewer name!",
         });
+      }
+      if (!isValidName(reviewedBy)) {
+        return res.status(400).send({
+          status: false,
+          message: "Please provide correct reviewer name!",
+        });
+      }
     }
-  }
     if (!isValid(rating)) {
       return res
         .status(400)
@@ -182,7 +174,7 @@ exports.addReview = async function (req, res) {
     //       message: "wrong fromat reviewedAt format is yyyy-mm-dd",
     //     });
     // }
-let date = new Date().toString();
+    let date = new Date().toString();
     if (!isValid(review)) {
       return res
         .status(400)
@@ -202,7 +194,7 @@ let date = new Date().toString();
 
     const responseBody = {
       bookId: bookId,
-      reviewedBy: reviewedBy || 'Guest',
+      reviewedBy: reviewedBy || "Guest",
       rating: rating,
       reviewedAt: date,
       review: review,
@@ -210,19 +202,13 @@ let date = new Date().toString();
 
     const reviewData = await reviewModel.create(responseBody);
 
-    const reviewResponse = {
-      _id: reviewData._id,
-      bookId: reviewData.bookId,
-      reviewedBy: reviewData.reviewedBy,
-      reviewedAt: reviewData.reviewedAt,
-      rating: reviewData.rating,
-      review: reviewData.review,
-    };
     await bookModel.findOneAndUpdate({ _id: bookId }, { $inc: { reviews: 1 } });
+    let availableBook1 = book.toObject();
+    availableBook1.reviewData = reviewData;
 
     return res
       .status(201)
-      .send({ status: true, message: "Success", data: reviewResponse });
+      .send({ status: true, message: "Success", data: availableBook1 });
   } catch (err) {
     return res.status(500).send({ status: false, message: err.message });
   }
@@ -286,7 +272,6 @@ exports.deleteReview = async function (req, res) {
       { _id: bookIdParams },
       { $inc: { reviews: -1 } }
     );
-
 
     return res.status(200).send({
       status: true,

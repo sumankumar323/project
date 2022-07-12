@@ -102,12 +102,10 @@ createUser = async function (req, res) {
             .status(400)
             .send({ status: false, message: "Please Enter street." });
         if (!isValidName(address.street))
-          return res
-            .status(400)
-            .send({
-              status: false,
-              message: "street name should contain only alphabets.",
-            });
+          return res.status(400).send({
+            status: false,
+            message: "street name should contain only alphabets.",
+          });
       }
       //In address the city is present
       if (address.city) {
@@ -116,12 +114,10 @@ createUser = async function (req, res) {
             .status(400)
             .send({ status: false, message: "Please Enter city" });
         if (!isValidName(address.city))
-          return res
-            .status(400)
-            .send({
-              status: false,
-              message: "City name should contain only alphabets.",
-            });
+          return res.status(400).send({
+            status: false,
+            message: "City name should contain only alphabets.",
+          });
       }
       //In address the pincode is present
       if (address.pincode) {
@@ -130,12 +126,10 @@ createUser = async function (req, res) {
             .status(400)
             .send({ status: false, message: "Please Enter pincode" });
         if (!pinReg.test(address.pincode))
-          return res
-            .status(400)
-            .send({
-              status: false,
-              message: "Pin no should be 6 digit numerical value only.",
-            });
+          return res.status(400).send({
+            status: false,
+            message: "Pin no should be 6 digit numerical value only.",
+          });
       }
     }
 
