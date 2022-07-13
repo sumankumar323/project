@@ -1,13 +1,6 @@
 const bookModel = require("../Model/bookmodel");
 const reviewModel = require("../Model/reviewmodel");
-const {
-  isValidReqBody,
-  isValid,
-  isValidObjectId,
-  isValidRating,
-  isValidName,
-  isValidRelAt,
-} = require("../validator/validator");
+const { isValidReqBody,isValid,isValidObjectId, isValidRating,isValidName} = require("../validator/validator");
 
 exports.updateReview = async function (req, res) {
   try {
@@ -135,6 +128,17 @@ exports.addReview = async function (req, res) {
         .status(400)
         .send({ status: false, message: "Book id is not valid!" });
     }
+
+    const book = await bookModel.findById(bookId);
+    if (!book) {
+      return res.status(404).send({ status: false, message: "No book found" });
+    }
+
+
+    if(book.isDeleted == true){
+      return res.status(400).send({status:false,message:"book is already deleted"})
+    }
+
     if (reviewedBy) {
       if (!isValid(reviewedBy)) {
         return res.status(400).send({
@@ -186,11 +190,7 @@ exports.addReview = async function (req, res) {
         .send({ status: false, message: "plss enter valid comment" });
     }
 
-    const book = await bookModel.findById(bookId);
 
-    if (!book) {
-      return res.status(404).send({ status: false, message: "No book found" });
-    }
 
     const responseBody = {
       bookId: bookId,
