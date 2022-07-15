@@ -12,6 +12,8 @@ const {
 const reviewController = require("../controllers/reviewcontrollers");
 const middleware = require("../middleware/middlware");
 
+const aws= require("aws-sdk");
+
 //User & Login API
 router.post("/register", userController.createUser);
 router.post("/login", userController.userLogin);

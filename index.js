@@ -7,9 +7,11 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+const multer= require("multer");
+
 mongoose
   .connect(
-    "mongodb+srv://sangamsuman323:XVZrnDNPfS8c21p8@cluster0.bolaw.mongodb.net/project5",
+    "mongodb+srv://sangamsuman323:XVZrnDNPfS8c21p8@cluster0.bolaw.mongodb.net/project3",
     {
       useNewUrlParser: true,
     }
@@ -17,6 +19,8 @@ mongoose
 
   .then(() => console.log("MongoDb is connected"))
   .catch((err) => console.log(err));
+
+  app.use( multer().any())
 
 app.use("/", route);
 app.all('/**',route ,(req, res) => {
