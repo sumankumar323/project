@@ -17,7 +17,7 @@ const urlSchema=mongoose.Schema({
          trim:true 
         
     }, 
-
+ 
     shortUrl: 
     {
         type:String,
