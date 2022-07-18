@@ -43,8 +43,9 @@ const getUrl= async function(req,res){
    let checkUrl=await urlModel.findOne({urlCode:code}).select({longUrl:1,_id:0})
    if(!checkUrl) return res.status(404).send({status:false , message:"Url Not found"})
    
-   return res.status(200).send({status:true, message:checkUrl})
+   return  res.status(302).redirect(checkUrl.longUrl)
 
+  
     }catch(error){
         return res.status(500).send({status:false,message:error.message});  
     }
