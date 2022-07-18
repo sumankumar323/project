@@ -4,4 +4,8 @@ const router=express()
 
 //router.post("/url/shorten",)
 //router.get("/:urlCode")
-router.get("/textca
+router.get("/textcase",function(a,b){
+  b.send("abc")
+});
+
+module.exports=router
