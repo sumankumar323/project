@@ -27,7 +27,7 @@ const shortUrl=async function(req,res){
       data.urlCode=short
 
    let savedata=await urlModel.create(data) 
-   let final= {longUrl:savedata.longUrl,shortUrl:savedata.shortUrl, urlCode:savedata.urlCode}
+   let final= {longUrl:savedata.longUrl,shortUrl:savedata.shortUrl, urlCode:savedata.urlCode} 
    return res.status(201).send({status:true, data:final});
    // console.log(short)
   }catch(error){
