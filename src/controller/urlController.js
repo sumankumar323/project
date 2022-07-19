@@ -12,13 +12,13 @@ const shortUrl=async function(req,res){
    try{
     let data=req.body
 
-    if(Object.keys(data).length==0) return res.status(400).send({status:false,message:"plese Provide key in body"});
+    if(Object.keys(data).length==0) return res.status(400).send({status:false,message:"please Provide key in body"});
       let {longUrl} =data
 
-    if(!isValid(longUrl)) return res.status(400).send({status:false,message:"plese Provide url"});
-    if(typeof longUrl!="string") return res.status(400).send({status:false,message:"plese Provide url in string"});
+    if(!isValid(longUrl)) return res.status(400).send({status:false,message:"please Provide url"});
+    if(typeof longUrl!="string") return res.status(400).send({status:false,message:"please Provide url in string"});
 
-    if (!validator( longUrl)) return res.status(400).send({status:false,message:"plese Provide valid url"});
+    if (!validator(longUrl)) return res.status(400).send({status:false,message:"please Provide valid url"});
     let alreadyUrl= await urlModel.findOne({longUrl:longUrl})
     if(alreadyUrl) return  res.status(400).send({status:false,message:"Url already exist"});
 
@@ -29,7 +29,6 @@ const shortUrl=async function(req,res){
    let savedata=await urlModel.create(data) 
    let final= {longUrl:savedata.longUrl,shortUrl:savedata.shortUrl, urlCode:savedata.urlCode} 
    return res.status(201).send({status:true, data:final});
-   // console.log(short)
   }catch(error){
    return res.status(500).send({status:false,message:error.message});
 
@@ -41,7 +40,7 @@ const getUrl= async function(req,res){
    let code=req.params.urlCode
 
    let checkUrl=await urlModel.findOne({urlCode:code}).select({longUrl:1,_id:0})
-   if(!checkUrl) return res.status(404).send({status:false , message:"Url Not found"})
+   if(!checkUrl) return res.status(404).send({status:false , message:"Url Not found or invalid url"})
    
    return  res.status(302).redirect(checkUrl.longUrl)
 
