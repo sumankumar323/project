@@ -14,10 +14,14 @@ mongoose.connect("mongodb+srv://sangamsuman323:XVZrnDNPfS8c21p8@cluster0.bolaw.m
    {useNewUrlParser:true
 
 })
+
 .then(()=>console.log("MongooDB Connected"))
 .catch((error)=>console.log(error))
 
 app.use('/',route)
+
+route.all("/**", function (req, res) {
+    res.status(404).send({status: false,msg: "no such api found"})})
 
 app.listen(3000|| process.env.PORT, function(){
     console.log("Express app running on Port "+(3000||process.env.PORT))

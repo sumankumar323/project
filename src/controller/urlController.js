@@ -53,6 +53,4 @@ const getUrl= async function(req,res){
 
 
 
-module.exports={shortUrl,getUrl
-
-}
+module.exports={shortUrl,getUrl}
